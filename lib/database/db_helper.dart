@@ -35,6 +35,21 @@ class DbHelper {
     final db = await openDB();
     return db.delete('employee', where: 'id = ?', whereArgs: [id]);
   }
+
+  //update employee
+  static Future<int> updateEmpolyee(
+    int id,
+    String username,
+    double salary,
+  ) async {
+    final db = await openDB();
+    return db.update(
+      'employee',
+      {'username': username, 'salary': salary},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }
 
 /* On mobile app

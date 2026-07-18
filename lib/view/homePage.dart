@@ -43,6 +43,7 @@ class _HomepageState extends State<Homepage> {
           final item = listEmployee[index];
           // take id
           final id = item['id'];
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Card(
@@ -73,7 +74,7 @@ class _HomepageState extends State<Homepage> {
                   item['username'],
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 14,
                   ),
                 ),
 
@@ -100,19 +101,157 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                trailing: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      DbHelper.dateleEmployee(id);
-                      loadData();
-                    },
-                    icon: Icon(Icons.delete, size: 16, color: Colors.red),
-                  ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 35,
+                      decoration: BoxDecoration(
+                        // color: Colors.red,
+                        shape: BoxShape.circle,
+                        color: Colors.grey.shade300,
+                      ),
+                      child: IconButton(
+                        padding: EdgeInsets.only(right: 0),
+
+                        onPressed: () {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              //get the varaible alreaddy have data
+                              _userName.text = item['username'];
+                              _salary.text = item['salary'].toString();
+                              return AlertDialog(
+                                title: Text("Update Employee"),
+                                content: Container(
+                                  height: 150,
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        controller: _userName,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.person),
+                                          hintText: "Enter Username",
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                      SizedBox(height: 12),
+                                      TextFormField(
+                                        controller: _salary,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(
+                                            Icons.monetization_on_outlined,
+                                          ),
+                                          hintText: "Enter Salary",
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  FilledButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Cancel"),
+                                  ),
+                                  FilledButton(
+                                    onPressed: () {
+                                      // log("${_userName.text} /t ${_salary.text}");
+                                      DbHelper.updateEmpolyee(
+                                        id,
+                                        _userName.text,
+                                        double.parse(_salary.text),
+                                      );
+                                      _userName.clear();
+                                      _salary.clear();
+                                      Navigator.pop(context);
+                                      loadData();
+                                    },
+                                    child: Text("Update"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.edit),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: 35,
+                      decoration: BoxDecoration(
+                        // color: Colors.red,
+                        shape: BoxShape.circle,
+                        color: Colors.grey.shade300,
+                      ),
+                      child: IconButton(
+                        padding: EdgeInsets.only(right: 0),
+                        onPressed: () {
+                          showDialog(
+                            context: (context),
+                            builder: (context) {
+                              return Dialog(
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  width: 150,
+                                  height: 120,
+                                  child: Expanded(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Are You Sure For Delete info",
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Expanded(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    DbHelper.dateleEmployee(id);
+                                                    loadData();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Yes"),
+                                                ),
+                                                SizedBox(width: 16),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text("No"),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                          // DbHelper.dateleEmployee(id);
+                          // loadData();
+                        },
+
+                        icon: Icon(Icons.delete),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
